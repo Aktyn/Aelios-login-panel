@@ -1,8 +1,6 @@
 .login-view {
 	padding: 10px;
 	min-width: 250px;
-	
-	box-shadow: 0px 2px 4px #0008;
 
 	& > h1 {
 		padding: 0px;
@@ -57,6 +55,17 @@
 		&:active {
 			background-color: #FFAB91;
 			box-shadow: 0px 0px 2px #0005;
+		}
+	}
+
+	.info {
+		margin-top: 10px;
+		font-size: 0.7em;
+		color: #B0BEC5;
+
+		a {
+			color: #80CBC4;
+			// font-weight: bold;
 		}
 	}
 }

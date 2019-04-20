@@ -62,7 +62,7 @@ export default class LoginView extends React.Component<any, LoginState> {
 			alt.emit('skipped');//TODO - pass account nickname to different listener
 		}).catch(console.error);
 
-		console.log(nick, password);
+		//console.log(nick, password);
 	}
 
 	render() {
@@ -78,9 +78,13 @@ export default class LoginView extends React.Component<any, LoginState> {
 						this.login();
 				}} ref={el=>this.pass_input=el} />
 			</div>
-			<div className='error-msg'>{this.state.error_msg}</div>
+			<div className={this.state.error_msg && 'error-msg'}>{this.state.error_msg}</div>
 			<div>
 				<button onClick={this.login.bind(this)}>ZALOGUJ</button>
+			</div>
+			<div className='info'>
+				Dane logowania dotyczą konta na forum.<br/>
+				Nie masz konta? Zarejestruj się <a href='https://forum.aelios.pl/'>na tej stronie</a>.
 			</div>
 		</div>;
 	}
