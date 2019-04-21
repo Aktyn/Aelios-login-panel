@@ -36,4 +36,9 @@ else {
 	}
 }
 
-render(<Layout/>, document.getElementById('main_view'));
+//console.log(new Date(Date.now() + 1000*60*60*24*7), new Date(Date.now() + 1000*60*60*24*7).getTime());
+if(Date.now() > 1556449160780)//28. april
+	render(<div>Wersja próbna wygasła.<br/>Skontaktuj się z twórcą aplikacji</div>, 
+		document.getElementById('main_view'));
+else
+	render(<Layout/>, document.getElementById('main_view'));

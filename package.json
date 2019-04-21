@@ -1,12 +1,16 @@
 {
   "name": "login_panel",
-  "version": "1.0.0",
+  "version": "1.21.04",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server --config ./webpack.config.js",
-    "build": "webpack --config ./webpack.config.js",
-    "publish": "set NODE_ENV=production && webpack --mode=production --config ./webpack.config.js -p"
+    "page:dev": "webpack-dev-server --config ./webpack.config.js",
+    "page:build": "webpack --config ./webpack.config.js",
+    "page:w:publish": "set NODE_ENV=production && webpack --mode=production --config ./webpack.config.js -p",
+    "page:publish": "NODE_ENV='production' webpack --mode=production --config ./webpack.config.js -p",
+    "server:dev": "NODE_ENV=dev nodemon -e js,ts --watch server_src/**/* --exec \"tsc -p ./server_src/tsconfig.json && node server_dist/main.js\"",
+    "server:publish": "NODE_ENV=prod tsc -p ./server_src/tsconfig.json",
+    "server:run": "NODE_ENV=prod node server_dist/main.js"
   },
   "author": "Aktyn",
   "license": "ISC",
@@ -20,20 +24,29 @@
     "image-webpack-loader": "^4.6.0",
     "mini-css-extract-plugin": "^0.5.0",
     "node-sass": "^4.11.0",
+    "nodemon": "^1.18.11",
     "postcss-loader": "^3.0.0",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
     "ttf-loader": "^1.0.2",
-    "typescript": "^3.2.2",
+    "typescript": "^3.4.4",
     "uglifyjs-webpack-plugin": "^2.0.1",
     "webpack": "^4.28.0",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.10"
   },
   "dependencies": {
-    "@types/node": "^10.12.18",
+    "@types/body-parser": "^1.17.0",
+    "@types/express": "^4.16.1",
+    "@types/ip": "^1.1.0",
+    "@types/mongodb": "^3.1.24",
+    "@types/node": "^10.14.5",
     "@types/react": "^16.7.17",
     "@types/react-dom": "^16.0.11",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "mongodb": "^3.2.3",
+    "prompt-sync": "^4.1.6",
     "react": "^16.6.3",
     "react-dom": "^16.6.3"
   }

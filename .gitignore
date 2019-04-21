@@ -1,4 +1,4 @@
-# Specify filepatterns you want git to ignore.
-
+run_dev
 node_modules/
 dist/
+server_dist/

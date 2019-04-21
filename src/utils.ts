@@ -5,7 +5,7 @@ export default {
 
 		return fetch(to, {
 			method: "POST",
-			mode: process.env.NODE_ENV === 'development' ? 'cors' : 'same-origin',
+			mode: 'cors',//process.env.NODE_ENV === 'development' ? 'cors' : 'same-origin',
 			headers: {"Content-Type": "application/json; charset=utf-8"},
 			body: data
 		}).then(res => res.json());

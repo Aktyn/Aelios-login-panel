@@ -1,11 +1,12 @@
 import React from 'react';
 import Utils from './../utils';
+import Config from './../config';
 
 import './../styles/login_view.scss';
 
 declare var alt: any;
 
-interface ApiResultSchema {
+interface ForumAccountInfo {
 	access: boolean;
 	avatar: string;//link
 	banned: boolean;
@@ -33,7 +34,7 @@ export default class LoginView extends React.Component<any, LoginState> {
 		super(props);
 	}
 
-	login() {
+	async login() {
 		if(!this.nick_input || !this.pass_input)
 			return;
 		let nick = this.nick_input.value;
@@ -46,11 +47,12 @@ export default class LoginView extends React.Component<any, LoginState> {
 
 		this.setState({error_msg: undefined});
 
-		Utils.getRequest(`http://forum.aelios.pl/api.php`, {
-			'username': nick,
-			'password': password
-		}).then((res: ApiResultSchema) => {
-			//console.log(res);
+		try {
+			let res: ForumAccountInfo = await Utils.getRequest(`http://forum.aelios.pl/api.php`, {
+				'username': nick,
+				'password': password
+			});
+			console.log(res);
 			if(res.status !== true)
 				return this.setState({error_msg: 'Logowanie nieudane'});
 			if(res.banned)
@@ -59,8 +61,14 @@ export default class LoginView extends React.Component<any, LoginState> {
 				return this.setState({error_msg: 'Nie masz uprawnień do wejścia na serwer.'});
 
 			//success
+			let wl_res = await Utils.postRequest(Config.server_url+'/wl_status', res);
+			console.log(wl_res);
+
 			alt.emit('skipped');//TODO - pass account nickname to different listener
-		}).catch(console.error);
+		}
+		catch(e) {
+			console.error(e);
+		}
 
 		//console.log(nick, password);
 	}
@@ -72,11 +80,13 @@ export default class LoginView extends React.Component<any, LoginState> {
 				<input type='text' maxLength={256} placeholder='Nazwa użytkownika' onKeyDown={e => {
 					if(e.keyCode === 13 && this.pass_input)
 						this.pass_input.focus();
-				}} ref={el=>this.nick_input=el} />
+				}} ref={el=>this.nick_input=el} 
+				defaultValue={process.env.NODE_ENV === 'development' ? 'Aktyn' : ''} />
 				<input type='password' maxLength={256} placeholder='Hasło' onKeyDown={e => {
 					if(e.keyCode === 13)
 						this.login();
-				}} ref={el=>this.pass_input=el} />
+				}} ref={el=>this.pass_input=el} 
+				defaultValue={process.env.NODE_ENV === 'development' ? 'byloaledobre' : ''}/>
 			</div>
 			<div className={this.state.error_msg && 'error-msg'}>{this.state.error_msg}</div>
 			<div>
