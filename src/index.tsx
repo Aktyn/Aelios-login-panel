@@ -1,9 +1,11 @@
 import React from 'react';
 import { render } from 'react-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import './styles/main.scss';
 
-import Layout from './components/layout';
+import Home from './components/home';
+import WlQuestions from './components/wl_questions';
 
 declare var alt: any;
 
@@ -36,9 +38,24 @@ else {
 	}
 }
 
+function NotFound(props: any) {
+	return <div>ERROR - route not found</div>
+}
+
 //console.log(new Date(Date.now() + 1000*60*60*24*7), new Date(Date.now() + 1000*60*60*24*7).getTime());
 if(Date.now() > 1556449160780)//28. april
 	render(<div>Wersja próbna wygasła.<br/>Skontaktuj się z twórcą aplikacji</div>, 
 		document.getElementById('main_view'));
-else
-	render(<Layout/>, document.getElementById('main_view'));
+else {
+	render(<BrowserRouter>
+		<Switch>
+    		<Route path="/" exact component={Home} />
+    		<Route path="/wl_questions" exact component={WlQuestions} />
+
+    		<Route component={NotFound} />
+		</Switch>
+  	</BrowserRouter>, document.getElementById('main_view'));
+}
+/*
+
+ */

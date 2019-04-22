@@ -1,0 +1,64 @@
+.wl-questions-main {
+	// background: #fff;
+	position: relative;
+	max-height: 90vh;
+	overflow-y: auto;
+	h1 {
+		margin: 0px;
+		padding: 15px 5px;
+		
+		background-color: #37474F;
+		font-size: 1em;
+		font-weight: normal;
+
+		img {
+			height: 50px;
+			position: absolute;
+			right: 10px;
+		}
+	}
+
+	hr {
+		margin: 0px;
+		background-color: #546E7A;
+	}
+
+	.questions {
+		& > * {//single question div
+			padding: 10px 0px;
+			border-bottom: 1px solid #546E7A;
+		}
+
+		textarea {
+			// width: 500px;
+			max-width: 500px;
+			min-width: 500px;
+			max-height: 200px;
+		}
+
+		label {
+			display: block;
+			margin: 5px 0px;
+		}
+
+		input {
+			min-width: 200px;
+		}
+
+		.single-row {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			grid-column-gap: 10px;
+			align-items: center;
+
+			label {
+				text-align: justify;
+				justify-self: right;
+			}
+
+			input {
+				justify-self: left;
+			}
+		}
+	}
+}

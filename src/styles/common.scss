@@ -1,3 +1,24 @@
+/* width */
+::-webkit-scrollbar {
+	width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+	background: #546E7A;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background: #607D8B;
+	border-radius: 4px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+	background: #78909C; 
+}
+
 .error-msg {
 	margin-bottom: 10px;
 	color: #ef9a9a;

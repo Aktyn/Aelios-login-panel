@@ -25,10 +25,27 @@ app.get('/test', async (req, res) => {
 
 
 app.post('/wl_status', async (req, res) => {
-	//console.log(req.body);
 	try {
 		await Database.updateForumAccountData(req.body);
-		res.json({result: 'SUCCESS'});
+
+		res.json({
+			result: 'SUCCESS', 
+			status: await Database.checkWhitelistStatus(req.body.id)
+		});
+	}
+	catch(e) {
+		console.error(e);
+		res.json({result: 'ERROR'});
+	}
+});
+
+app.post('/apply_wl_request', async (req, res) => {
+	try {
+		let apply_result = await Database.applyWhitelistRequest(req.body.user_id, req.body.answers);
+
+		res.json({
+			result: apply_result ? 'SUCCESS' : 'CANNOT_APPLY_WL_REQUEST'
+		});
 	}
 	catch(e) {
 		console.error(e);

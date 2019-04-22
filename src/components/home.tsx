@@ -4,14 +4,14 @@ import NewsContainer from './news_container';
 
 declare var alt: any;
 
-export default class Layout extends React.Component<any, any> {
+export default class Home extends React.Component<any, any> {
 	constructor(props: any) {
 		super(props);
 	}
 
 	render() {
 		return <>
-			<div className='layout-main'>
+			<div className='home-main'>
 				<LoginView/>
 				<NewsContainer/>
 			</div>

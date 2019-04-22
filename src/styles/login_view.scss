@@ -19,43 +19,7 @@
 		grid-template-rows: auto;
 		grid-row-gap: 10px;
 
-		input {
-			padding: 5px 5px;
-			background: #607D8B;
-			min-width: 200px;
-			font-size: 0.9em;
-
-			border-radius: 3px;
-			border: 1px solid transparent;
-
-			transition: border-color 0.3s ease-in-out;
-
-			&::placeholder {
-				color: #B0BEC5;
-			}
-
-			&:focus {
-				border-color: #FF8A65;
-			}
-		}
-	}
-
-	button {
-		// border: 1px solid #FF8A65;
-		background-color: #FF7043;
-		min-width: 110px;
-
-		font-weight: bold;
-		padding: 5px 10px;
-
-		&:hover {
-			background: #FF8A65;
-		}
-
-		&:active {
-			background-color: #FFAB91;
-			box-shadow: 0px 0px 2px #0005;
-		}
+		
 	}
 
 	.info {
@@ -67,5 +31,9 @@
 			color: #80CBC4;
 			// font-weight: bold;
 		}
+	}
+
+	.request-status {
+		margin: 20px 5px;
 	}
 }

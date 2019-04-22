@@ -43,11 +43,13 @@
     "@types/node": "^10.14.5",
     "@types/react": "^16.7.17",
     "@types/react-dom": "^16.0.11",
+    "@types/react-router-dom": "^4.3.2",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "mongodb": "^3.2.3",
     "prompt-sync": "^4.1.6",
     "react": "^16.6.3",
-    "react-dom": "^16.6.3"
+    "react-dom": "^16.6.3",
+    "react-router-dom": "^5.0.0"
   }
 }
