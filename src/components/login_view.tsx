@@ -93,8 +93,13 @@ class LoginView extends React.Component<any, LoginState> {
 					case 'pending':
 						return <span>Twoje podanie oczekuje na rozpatrzenie.</span>;
 					case 'accepted':
-						alt.emit('skipped');//TODO - pass account nickname to different listener
-						return '';
+						try {
+							alt.emit('skipped');//TODO - pass account nickname to different listener
+						}
+						catch(e) {
+							console.error(e);
+						}
+						return <span>Twoje podanie zostało zaakceptowane.</span>;
 						//return <span>Twoje podanie zostało zaakceptowane<br/>
 						//	</span>;
 					case 'rejected':
