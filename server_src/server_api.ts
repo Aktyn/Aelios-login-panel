@@ -9,14 +9,14 @@ app.use(bodyParser.json());
 //console.log(redirect_url);//TODO - info about whitelisting this url in google apis
 
 var allowCrossDomain = function(req: any, res: any, next: any) {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
     res.header('Access-Control-Allow-Headers', 'Content-Type');
 
     next();
 };
 
-if(process.env.NODE_ENV === 'dev')
+//if(process.env.NODE_ENV === 'dev')
 	app.use(allowCrossDomain);
 
 app.get('/test', async (req, res) => {
@@ -26,6 +26,10 @@ app.get('/test', async (req, res) => {
 
 app.post('/wl_status', async (req, res) => {
 	try {
+		if(req.body.id === undefined) {
+			res.json({result: 'ERROR'});
+			return;
+		}
 		await Database.updateForumAccountData(req.body);
 
 		res.json({

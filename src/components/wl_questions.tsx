@@ -1,13 +1,18 @@
 import React, {createRef} from 'react';
-import { withRouter } from 'react-router-dom';
+//import { withRouter } from 'react-router-dom';
 import AccountData from './../common/account_data';
 import Utils from './../common/utils';
 import Config from './../common/config';
+import {Pages} from './home';
 
 // declare var alt: any;
 import './../styles/wl_questions_view.scss';
 
 const example_avatar = 'https://forum.aelios.pl/uploads/monthly_2019_04/avatar.thumb.png.0b0eb77ae08993ec25942eb723ccb55e.png';
+
+interface WlQuestionsProps {
+	switchPage: (page: Pages) => void;
+}
 
 interface WlQuestionsState {
 	nick?: string;
@@ -15,7 +20,7 @@ interface WlQuestionsState {
 	error_msg?: string;
 }
 
-class WlQuestions extends React.Component<any, WlQuestionsState> {
+export default class WlQuestions extends React.Component<WlQuestionsProps, WlQuestionsState> {
 	private sendTimeout: number | null = null;
 	private sendBtn = createRef<HTMLButtonElement>();
 
@@ -75,7 +80,8 @@ class WlQuestions extends React.Component<any, WlQuestionsState> {
 			}, 5000) as never;
 		}
 		else
-			this.props.history.push(`/`);
+			this.props.switchPage(Pages.HOME);
+			//this.props.history.push(`/`);
 	}
 
 	trySend() {
@@ -134,7 +140,8 @@ class WlQuestions extends React.Component<any, WlQuestionsState> {
 		if(res.result !== 'SUCCESS')
 			this.setState({error_msg: 'Nie można wysłać zapytania'});
 		else
-			this.props.history.push(`/`);
+			this.props.switchPage(Pages.HOME);
+			//this.props.history.push(`/`);
 
 		//console.log( answers );
 	}
@@ -226,4 +233,4 @@ class WlQuestions extends React.Component<any, WlQuestionsState> {
 	}
 }
 
-export default withRouter(WlQuestions);
+//export default withRouter(WlQuestions);

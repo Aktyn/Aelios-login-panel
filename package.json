@@ -8,6 +8,7 @@
     "page:build": "webpack --config ./webpack.config.js",
     "page:w:publish": "set NODE_ENV=production && webpack --mode=production --config ./webpack.config.js -p",
     "page:publish": "NODE_ENV='production' webpack --mode=production --config ./webpack.config.js -p",
+    "server:w:dev": "set NODE_ENV=dev && nodemon -e js,ts --watch server_src/**/* --exec \"tsc -p ./server_src/tsconfig.json && node server_dist/main.js\"",
     "server:dev": "NODE_ENV=dev nodemon -e js,ts --watch server_src/**/* --exec \"tsc -p ./server_src/tsconfig.json && node server_dist/main.js\"",
     "server:publish": "NODE_ENV=prod tsc -p ./server_src/tsconfig.json",
     "server:run": "NODE_ENV=prod node server_dist/main.js"

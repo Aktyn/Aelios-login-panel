@@ -1,19 +1,25 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
+//import { withRouter } from 'react-router-dom';
 import Utils from './../common/utils';
 import Config from './../common/config';
 import AccountData, {ForumAccountInfo} from './../common/account_data';
 
+import {Pages} from './home';
+
 import './../styles/login_view.scss';
 
 declare var alt: any;
+
+interface LoginViewProps {
+	switchPage: (page: Pages) => void;
+}
 
 interface LoginState {
 	error_msg?: string;
 	wl_status?: string;
 }
 
-class LoginView extends React.Component<any, LoginState> {
+export default class LoginView extends React.Component<LoginViewProps, LoginState> {
 	private nick_input: HTMLInputElement | null = null;
 	private pass_input: HTMLInputElement | null = null;
 
@@ -30,7 +36,7 @@ class LoginView extends React.Component<any, LoginState> {
 	}
 
 	async checkWlStatus(account_data: ForumAccountInfo, preventLoop = false) {
-		console.log(account_data);
+		//console.log(account_data);
 		let wl_res = await Utils.postRequest(Config.server_url+'/wl_status', account_data);
 		if(wl_res.result !== 'SUCCESS')
 			return this.setState({error_msg: 'Nie udało się pobrać statusu whitelisty'});
@@ -40,10 +46,10 @@ class LoginView extends React.Component<any, LoginState> {
 		switch(wl_res.status) {
 			case 'not_found':
 				if(!preventLoop)
-					this.props.history.push(`/wl_questions`);
+					this.props.switchPage(Pages.WL_QUESTIONS);
+					//this.props.history.push(`/wl_questions`);
 				return;
 			default:
-				console.log('TODO - wl result for status:', wl_res.status);
 				this.setState({wl_status: wl_res.status});
 				return;
 		}
@@ -67,7 +73,7 @@ class LoginView extends React.Component<any, LoginState> {
 				'username': nick,
 				'password': password
 			});
-			console.log(res);
+			//console.log(res);
 			if(res.status !== true)
 				return this.setState({error_msg: 'Logowanie nieudane'});
 			if(res.banned)
@@ -139,4 +145,4 @@ class LoginView extends React.Component<any, LoginState> {
 	}
 }
 
-export default withRouter(LoginView);
+//export default withRouter(LoginView);
