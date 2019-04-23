@@ -1,0 +1,19 @@
+.request-details-main {
+	.request-details {
+
+	}
+
+	.others_separator {
+		height: 30px;
+		line-height: 30px;
+
+		display: grid;
+		width: 100%;
+		grid-template-columns: auto 33% auto;
+		align-items: center;
+
+		hr {
+			display: inline-block;
+		}
+	}
+}

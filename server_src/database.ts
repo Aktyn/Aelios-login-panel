@@ -52,7 +52,7 @@ MongoClient.connect(uri, {
 		{name: 'wl_user_id', unique: false});//one user can have multiple wl requests so unique is false
 }).catch(console.error);
 
-interface ForumAccountInfo {//same in login_view.tsx
+export interface ForumAccountInfo {//same in login_view.tsx
 	access: boolean;
 	avatar: string;//link
 	banned: boolean;
@@ -61,7 +61,7 @@ interface ForumAccountInfo {//same in login_view.tsx
 	groups: number[];
 	id: number;
 	name: string;//user nickname
-	status: boolean;
+	status: boolean;//TODO - get rid of it
 }
 
 interface MongoForumAccountInfo extends ForumAccountInfo {
@@ -116,7 +116,7 @@ export default {
 	async checkWhitelistStatus(_user_id: number) {
 		let wl_requests = getCollection(COLLECTIONS.wl_requests);
 		let all_request = await wl_requests.find({user_id: _user_id}).sort({timestamp: -1})
-			.project({status: 1, timestamp: 1});//.next();
+			.project({status: 1, timestamp: 1});
 
 		let latest_request: {timestamp: number, status: string} | null = await all_request.next();
 		if(latest_request === null)
@@ -159,5 +159,83 @@ export default {
 		});
 
 		return true;
+	},
+
+	async getRequestsByStatus(_status: string) {
+		let wl_requests = getCollection(COLLECTIONS.wl_requests);
+		
+		const REQUEST_LIFETIME = 1000 * 60 * 60 * 24 * 7 * 4;//4 weeks
+		let result = await wl_requests.aggregate([
+			{ $match: {
+				status: _status, 
+				timestamp: { $gt: Date.now() - REQUEST_LIFETIME} 
+			} },
+			{ $sort: {timestamp: -1} },
+			{
+				$lookup: {
+					from: COLLECTIONS.forum_accounts,
+					localField: 'user_id',
+					foreignField: 'id',
+					as: 'forum_user'
+				}
+			},
+			{ $project: {
+				_id: 1,
+				user_id: 1,
+				timestamp: 1,
+				status: 1,
+				answers: {
+					nick_input: 1,
+					data_ur: 1
+				},
+				forum_user: {
+					name: 1, avatar: 1
+				}
+			} }
+		]).toArray();
+
+		//console.log(result, result.map(res => res.forum_user));
+		return result;
+	},
+
+	async getRequestDetails(id: string) {
+		let wl_requests = getCollection(COLLECTIONS.wl_requests);
+
+		const target_id = ObjectId.createFromHexString(id);
+
+		const lookup = {
+			from: COLLECTIONS.forum_accounts,
+			localField: 'user_id',
+			foreignField: 'id',
+			as: 'forum_user'
+		};
+
+		const project = {
+			_id: 1,
+			user_id: 1,
+			timestamp: 1,
+			status: 1,
+			answers: 1,//include all answers
+			forum_user: {
+				name: 1, avatar: 1
+			}
+		};
+
+		let result = await wl_requests.aggregate([
+			{ $match: {_id: target_id} },
+			{ $lookup: lookup },
+			{ $project: project }
+		]).next();
+
+		//get every other request of this user
+		let _other_user_requests = await wl_requests.aggregate([
+			{ $match: { user_id: result.user_id, _id: {$ne: target_id} } },
+			{ $sort: {timestamp: -1} },
+			{ $lookup: lookup },
+			{ $project: project }
+		]).toArray();
+		//console.log(other_user_requests);
+
+		return {request: result, other_user_requests: _other_user_requests};
 	}
 }

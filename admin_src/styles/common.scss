@@ -1,0 +1,56 @@
+::-webkit-scrollbar {/* width */
+	width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+	background: #546E7A;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background: #607D8B;
+	border-radius: 4px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+	background: #78909C; 
+}
+
+.error-msg {
+	margin-bottom: 10px;
+	color: #e57373;
+	// font-weight: bold;
+
+	animation: pop-in 0.3s cubic-bezier(.36,.07,.19,.97);
+
+	@keyframes pop-in {
+		0% {
+			opacity: 0;
+			transform: scaleX(4);
+		}
+		100% {
+			opacity: 1;
+			transform: scaleX(1);
+		}
+	}
+}
+
+.radio-selector {
+	// background: red;
+	display: inline-grid;
+	grid-template-columns: 30px auto;
+	align-items: center;
+	justify-items: stretch;
+
+	input[type='radio'] {
+		min-width: auto !important;
+		width: 30px;
+		height: 15px;
+	}
+
+	label {
+		text-align: left;
+	}
+}

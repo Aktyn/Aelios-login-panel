@@ -1,6 +1,7 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import Database from './database';
+import AdminPanelAuthentication from './admin_panel_authentication';
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -55,6 +56,82 @@ app.post('/apply_wl_request', async (req, res) => {
 		console.error(e);
 		res.json({result: 'ERROR'});
 	}
+});
+
+
+//admin panel requests
+
+app.post('/admin_panel_login', async (req, res) => {
+	try {
+		let token = await AdminPanelAuthentication.login(req.body.login, req.body.password);
+		//console.log(token);
+
+		if(token)
+			res.json({result: 'SUCCESS', token: token});
+		else 
+			res.json({result: 'ERROR'});
+		
+	}
+	catch(e) {
+		console.error(e);
+		res.json({result: 'ERROR'});
+	}
+});
+
+/*app.post('/login_with_token', async (req, res) => {
+	try {
+		//console.log(req.body);
+		let token = AdminPanelAuthentication.authnenticate(req.body.token);
+		//console.log(token);
+		if(token)
+			res.json({result: 'SUCCESS'});
+		else
+			res.json({result: 'ERROR'});
+	}
+	catch(e) {
+		console.error(e);
+		res.json({result: 'ERROR'});
+	}
+});*/
+
+app.post('/get_wl_requests', async (req, res) => {
+	try {
+		//let apply_result = await Database.applyWhitelistRequest(req.body.user_id, req.body.answers);
+		if(!AdminPanelAuthentication.authnenticate(req.body.token))
+			return res.json({result: 'PERMISSION_DENIED'});
+
+		let wl_requests = await Database.getRequestsByStatus(req.body.status);
+
+		res.json({
+			result: 'SUCCESS',
+			data: wl_requests
+		});
+	}
+	catch(e) {
+		console.error(e);
+		res.json({result: 'ERROR'});
+	}
+	return;
+});
+
+app.post('/get_wl_request_details', async (req, res) => {
+	try {
+		//let apply_result = await Database.applyWhitelistRequest(req.body.user_id, req.body.answers);
+		if(!AdminPanelAuthentication.authnenticate(req.body.token))
+			return res.json({result: 'PERMISSION_DENIED'});
+
+		let request_details = await Database.getRequestDetails(req.body.id);
+
+		res.json({
+			result: 'SUCCESS',
+			data: request_details
+		});
+	}
+	catch(e) {
+		console.error(e);
+		res.json({result: 'ERROR'});
+	}
+	return;
 });
 
 let running = false;

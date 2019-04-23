@@ -1,0 +1,113 @@
+/*cubic-bezier(.87,-.41,.19,1.44)*/
+/*cubic-bezier(.36,.07,.19,.97)*/
+
+.wl-requests-main {
+	padding: 0px;
+	padding-bottom: 10px;
+	overflow: hidden;
+
+	.categories {
+		$cat_colors: #29B6F6, #8BC34A, #ef5350;
+		$categories: 'pending', 'accepted', 'rejected';
+		//$cat_colors_hover: #80DEEA, #AED581, #e57373;
+
+		display: grid;
+		width: 100%;
+		grid-template-columns: 1fr 1fr 1fr;
+		align-items: center;
+
+		position: relative;
+		&::after {
+			content: "";
+			position: absolute;
+			display: inline-block;
+			width: 33.333334%;
+			bottom: 0px;
+			left: 0px;
+			height: 5px;
+			border-radius: 5px;
+			background: #fff;
+
+			transition: transform 0.5s cubic-bezier(.36,.07,.19,.97), background-color 0.5s ease-in-out;
+		}
+
+		& > * {
+			font-weight: bold;
+			padding: 8px 0px;
+
+			transition: color 0.2s ease-in-out;
+		}
+
+		@for $i from 1 through 3 {
+			&.#{nth($categories, $i)}::after {
+				transform: translateX(($i - 1) * 100%);
+				background-color: nth($cat_colors, $i);
+			}
+
+			& > *:nth-child(#{$i}):hover {
+				color: nth($cat_colors, $i);
+			}
+		}
+	}
+
+	.requests-list {
+		.entry {
+			display: inline-grid;
+			grid-template-columns: fit-content(100%) auto fit-content(100%);
+			grid-template-rows: 40px 1px auto;
+			grid-template-areas: "avatar nick age" "hr hr hr" "dt dt dt" "btns btns btns";
+			align-items: center;
+			justify-content: stretch;
+			justify-items: center;
+
+			margin: 10px;
+
+			min-width: 200px;
+			box-shadow: 0px 2px 5px #0008;
+			border-radius: 5px;
+			border: 1px solid #CFD8DC;
+
+			.forum-nick {
+				grid-area: nick;
+				margin: 0px 10px;
+			}
+			.age {
+				grid-area: age;
+				white-space: nowrap;
+				margin-right: 5px;
+			}
+			.avatar {
+				grid-area: avatar;
+				height: 30px;
+				justify-self: left;
+				margin: 5px;
+			}
+
+			hr {
+				grid-area: hr;
+			}
+
+			.dt {
+				grid-area: dt;
+				white-space: nowrap;
+				margin-top: 5px;
+			}
+
+			button, a {
+				grid-area: btns;
+
+				cursor: pointer !important;
+				margin: 5px 0px;
+				padding: 5px 10px;
+				border-radius: 5px;
+				box-shadow: 0px 2px 4px #0008;
+				color: #fff;
+				background-color: #26A69A;
+
+				&:hover {
+					background-color: #4DB6AC;
+				}
+			}
+		}
+	}
+}
