@@ -10,7 +10,14 @@ export interface ForumAccountInfo {
 	status: boolean;
 }
 
+export interface WhitelistStatus {
+	timestamp: number;
+	count: number;
+	status: string;
+}
+
 let data: ForumAccountInfo | null = null;
+let wl_data: WhitelistStatus | null = null;
 
 export default {
 	setData: (_data: ForumAccountInfo) => {
@@ -18,5 +25,12 @@ export default {
 	},
 	getData: () => {
 		return data;
+	},
+
+	setWlStatus: (_wl_data: WhitelistStatus) => {
+		wl_data = _wl_data;
+	},
+	getWlStatus: () => {
+		return wl_data;
 	}
 }

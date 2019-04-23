@@ -39,3 +39,21 @@
 		}
 	}
 }
+
+.radio-selector {
+	// background: red;
+	display: inline-grid;
+	grid-template-columns: 30px auto;
+	align-items: center;
+	justify-items: stretch;
+
+	input[type='radio'] {
+		min-width: auto !important;
+		width: 30px;
+		height: 15px;
+	}
+
+	label {
+		text-align: left;
+	}
+}

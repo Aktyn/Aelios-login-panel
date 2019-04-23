@@ -24,7 +24,7 @@
 	}
 
 	.questions {
-		& > * {//single question div
+		& > div {//single question div
 			padding: 10px 0px;
 			border-bottom: 1px solid #546E7A;
 		}

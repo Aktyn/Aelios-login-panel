@@ -17,7 +17,7 @@ interface HomeState {
 
 export default class Home extends React.Component<any, HomeState> {
 	state: HomeState = {
-		page: Pages.HOME
+		page: Pages.HOME//WL_QUESTIONS //HOME
 	}
 
 	constructor(props: any) {

@@ -10,6 +10,9 @@ import './../styles/wl_questions_view.scss';
 
 const example_avatar = 'https://forum.aelios.pl/uploads/monthly_2019_04/avatar.thumb.png.0b0eb77ae08993ec25942eb723ccb55e.png';
 
+const select1options = ['Jechałbym dalej', 'Wysiadłbym od razu i do nich celował', 'Odegrał rannego'];
+const select2options = ['Klikasz ALT + F4', 'Podnosisz ręce', 'Podchodzisz do jednego z napastników i zaczynasz go bić'];
+
 interface WlQuestionsProps {
 	switchPage: (page: Pages) => void;
 }
@@ -17,7 +20,12 @@ interface WlQuestionsProps {
 interface WlQuestionsState {
 	nick?: string;
 	avatar?: string;//url
+
+	wl_count: number;
+
 	error_msg?: string;
+	selection1: string;
+	selection2: string;
 }
 
 export default class WlQuestions extends React.Component<WlQuestionsProps, WlQuestionsState> {
@@ -27,13 +35,15 @@ export default class WlQuestions extends React.Component<WlQuestionsProps, WlQue
 	private logoutTimeout: number | null = null;
 	private logoutBtn = createRef<HTMLButtonElement>();
 
-	state: WlQuestionsState = {};
-
-	//answers references
+	state: WlQuestionsState = {
+		wl_count: 0,
+		selection1: select1options[0],
+		selection2: select2options[0]
+	};
 	
 	private nick_input = createRef<HTMLInputElement>();
 	private data_ur = createRef<HTMLInputElement>();
-	private steam_id = createRef<HTMLInputElement>();
+	//private steam_id = createRef<HTMLInputElement>();
 	private stream_link = createRef<HTMLInputElement>();
 	private roleplay_desc = createRef<HTMLTextAreaElement>();
 	private roleplay_exp = createRef<HTMLTextAreaElement>();
@@ -43,8 +53,8 @@ export default class WlQuestions extends React.Component<WlQuestionsProps, WlQue
 	private situation1 = createRef<HTMLTextAreaElement>();
 	private situation2 = createRef<HTMLTextAreaElement>();
 	private situation3 = createRef<HTMLTextAreaElement>();
-	private select1 = createRef<HTMLSelectElement>();
-	private select2 = createRef<HTMLSelectElement>();
+	//private select1 = createRef<HTMLSelectElement>();
+	//private select2 = createRef<HTMLSelectElement>();
 
 	constructor(props: any) {
 		super(props);
@@ -56,6 +66,13 @@ export default class WlQuestions extends React.Component<WlQuestionsProps, WlQue
 			this.setState({
 				nick: accData.name,
 				avatar: accData.avatar
+			});
+		}
+
+		let wlData = AccountData.getWlStatus();
+		if(wlData) {
+			this.setState({
+				wl_count: wlData.count
 			});
 		}
 	}
@@ -105,11 +122,11 @@ export default class WlQuestions extends React.Component<WlQuestionsProps, WlQue
 	async send() {
 		let account = AccountData.getData();
 
-		if(!this.nick_input.current || !this.data_ur.current || !this.steam_id.current ||
+		if(!this.nick_input.current || !this.data_ur.current || /*!this.steam_id.current ||*/
 			!this.stream_link.current || !this.roleplay_desc.current || !this.roleplay_exp.current ||
 			!this.prev_characters.current || !this.next_characters.current || 
 			!this.character_history.current || !this.situation1.current || !this.situation2.current ||
-			!this.situation3.current || !this.select1.current || !this.select2.current)
+			!this.situation3.current/* || !this.select1.current || !this.select2.current*/)
 		{
 			return;
 		}
@@ -117,7 +134,7 @@ export default class WlQuestions extends React.Component<WlQuestionsProps, WlQue
 		let answers = {
 			nick_input: this.nick_input.current.value,
 			data_ur: this.data_ur.current.value,
-			steam_id: this.steam_id.current.value,
+			//steam_id: this.steam_id.current.value,
 			stream_link: this.stream_link.current.value,
 			roleplay_desc: this.roleplay_desc.current.value,
 			roleplay_exp: this.roleplay_exp.current.value,
@@ -127,9 +144,13 @@ export default class WlQuestions extends React.Component<WlQuestionsProps, WlQue
 			situation1: this.situation1.current.value,
 			situation2: this.situation2.current.value,
 			situation3: this.situation3.current.value,
-			select1: this.select1.current.selectedOptions[0].innerText,
-			select2: this.select2.current.selectedOptions[0].innerText
+			select1: this.state.selection1,
+			select2: this.state.selection2
+			//select1: this.select1.current.selectedOptions[0].innerText,
+			//select2: this.select2.current.selectedOptions[0].innerText
 		}
+
+		console.log(answers);
 
 		let res = await Utils.postRequest(Config.server_url+'/apply_wl_request', {
 			user_id: account ? account.id : 4,//Aktyn id is 4
@@ -150,9 +171,19 @@ export default class WlQuestions extends React.Component<WlQuestionsProps, WlQue
 		return <div className='wl-questions-main container'>
 			<h1>
 				<img src={this.state.avatar || example_avatar} />
-				Witaj {this.state.nick||'Unknown nickname'}<br/>
-				Twoja konto nie figuruje na whiteliście.<br/>
-				Wypełnij poniższy formularz w celu złożenia podania.
+				<div>Witaj {this.state.nick||'Unknown nickname'}</div>
+				{this.state.wl_count > 0 ?
+					<span>
+						Składasz podanie po raz {this.state.wl_count+1}.<br/>
+						Każda osoba może złożyć maksymalnie {Config.MAXIMUM_REQUESTS} podania o whiteliste.<br/>
+						Powodzenia
+					</span>
+					:
+					<span>
+						Twoja konto nie figuruje na whiteliście.<br/>
+						Wypełnij poniższy formularz w celu złożenia podania.
+					</span>
+				}
 			</h1>
 			<hr/>
 			<div className='questions'>
@@ -160,14 +191,11 @@ export default class WlQuestions extends React.Component<WlQuestionsProps, WlQue
 					<label>Nick Discord:</label>
 					<input type="text" maxLength={256} ref={this.nick_input} />
 				</div>
-				<div className='single-row'>
+				<div className='single-row' style={{borderBottom: 'none'}}>
 					<label>Data urodzenia:</label>
 					<input type="date" maxLength={32} ref={this.data_ur} />
 				</div>
-				<div className='single-row'>
-					<label>SteamID:</label>
-					<input type="text" maxLength={32} ref={this.steam_id} />
-				</div>
+				<hr style={{margin: '2px 0px', backgroundColor: '#37474F', height: '2px'}}/>
 				<div>
 					<label>Streamujesz, nagrywasz lub masz jakiś przykład twojej akcji RolePlay? Podaj nam link do niej!</label>
 					<input type="text" maxLength={64} ref={this.stream_link} />
@@ -206,19 +234,27 @@ export default class WlQuestions extends React.Component<WlQuestionsProps, WlQue
 				</div>
 				<div>
 					<label>Inni gracze Cię śledzą i nagle zagapiłeś się i wjechałeś w budynek. Co byś zrobił?</label>
-					<select ref={this.select1}>
-						<option value="1">Jechałbym dalej</option>
-						<option value="2">Wysiadłbym od razu i do nich celował</option>
-						<option value="3">Odegrał rannego</option>
-					</select>
+					<div className='radio-selector'>{select1options.map((opt, index) => {
+						return <React.Fragment key={index}>
+							<input key={index} type='radio' name='select1' value={opt}
+								checked={this.state.selection1 === opt} onChange={() => {
+									this.setState({selection1: opt});
+								}} />
+							<label>{opt}</label>
+						</React.Fragment>
+					})}</div>
 				</div>
 				<div>
 					<label>3 napastników celuje do Ciebie. Co byś zrobił?</label>
-					<select ref={this.select2}>
-						<option value="1">Klikasz ALT + F4</option>
-						<option value="2">Podnosisz ręce</option>
-						<option value="3">Podchodzisz do jednego z napastników i zaczynasz go bić</option>
-					</select>
+					<div className='radio-selector'>{select2options.map((opt, index) => {
+						return <React.Fragment key={index}>
+							<input key={index} type='radio' name='select2' value={opt}
+								checked={this.state.selection2 === opt} onChange={() => {
+									this.setState({selection2: opt});
+								}} />
+							<label>{opt}</label>
+						</React.Fragment>
+					})}</div>
 				</div>
 			</div>
 			<div>

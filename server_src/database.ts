@@ -72,7 +72,7 @@ interface MongoForumAccountInfo extends ForumAccountInfo {
 interface WhitelistRequestAnswers {
 	nick_input: string;
 	data_ur: string;
-	steam_id: string;
+	//steam_id: string;
 	stream_link: string;
 	roleplay_desc: string;
 	roleplay_exp: string;
@@ -115,13 +115,18 @@ export default {
 
 	async checkWhitelistStatus(_user_id: number) {
 		let wl_requests = getCollection(COLLECTIONS.wl_requests);
-		let latest_request_status: {status: string} | null = await wl_requests.find({user_id: _user_id})
-			.sort({timestamp: -1}).project({status: 1}).next();
-		//console.log(latest_request_status, _user_id);
-		if(latest_request_status === null)
-			return 'not_found';
+		let all_request = await wl_requests.find({user_id: _user_id}).sort({timestamp: -1})
+			.project({status: 1, timestamp: 1});//.next();
+
+		let latest_request: {timestamp: number, status: string} | null = await all_request.next();
+		if(latest_request === null)
+			return {timestamp: 0, count: 0, status: 'not_found'};
 		else
-			return latest_request_status.status;
+			return {
+				timestamp: latest_request.timestamp,
+				count: await all_request.count(),
+				status: latest_request.status
+			};
 	},
 
 	async applyWhitelistRequest(_user_id: number, _answers: WhitelistRequestAnswers) {
