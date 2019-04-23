@@ -1,11 +1,92 @@
 .request-details-main {
+	min-height: 95%;
+	
 	.request-details {
+		&:not(:last-child):not(:first-child) {
+			margin-bottom: 30px;
+		}
 
+		header {
+			display: grid;
+			grid-template-columns: 1fr 1fr 1fr;
+			align-items: center;
+
+			padding-bottom: 5px;
+			margin-bottom: 5px;
+			// border-top: 1px solid #B0BEC5;
+			
+			border-bottom: 1px solid #B0BEC5;
+
+			.forum_acc {
+				justify-self: left;
+				display: grid;
+				grid-template-columns: fit-content(100%) auto;
+				align-items: center;
+			}
+
+			.date {
+				justify-self: right;
+			}
+
+			img {
+				height: 30px;
+				margin-right: 8px;
+			}
+		}
+
+		.answers {
+			.single-row {
+				display: grid;
+				grid-template-columns: 1fr 1fr;
+				grid-column-gap: 10px;
+				& > *:first-child {
+					text-align: right;
+				}
+				& > *:last-child {
+					text-align: left;
+				}
+			}
+
+			& > div {
+				padding: 8px 0px;
+
+				&:not(:last-child) {
+					border-bottom: 1px solid #B0BEC5;
+				}
+
+				& > div {//answer content
+					font-weight: bold;
+				}
+			}
+		}
+
+		.buttons {
+			//display: inline-grid;
+			//grid-template-columns: 1fr 1fr;
+			//grid-column-gap: 20px;
+			//
+			button {
+				margin: 0px 10px;
+			}
+
+			.accept-btn {
+				background-color: #8BC34A;
+				&:hover {
+					background-color: #9CCC65;
+				}
+			}
+			.reject-btn {
+				background-color: #ef5350;
+				&:hover {
+					background-color: #e57373;
+				}
+			}
+		}
 	}
 
 	.others_separator {
-		height: 30px;
-		line-height: 30px;
+		height: 60px;
+		line-height: 60px;
 
 		display: grid;
 		width: 100%;
