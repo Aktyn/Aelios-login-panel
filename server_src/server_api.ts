@@ -78,22 +78,6 @@ app.post('/admin_panel_login', async (req, res) => {
 	}
 });
 
-/*app.post('/login_with_token', async (req, res) => {
-	try {
-		//console.log(req.body);
-		let token = AdminPanelAuthentication.authnenticate(req.body.token);
-		//console.log(token);
-		if(token)
-			res.json({result: 'SUCCESS'});
-		else
-			res.json({result: 'ERROR'});
-	}
-	catch(e) {
-		console.error(e);
-		res.json({result: 'ERROR'});
-	}
-});*/
-
 app.post('/get_wl_requests', async (req, res) => {
 	try {
 		//let apply_result = await Database.applyWhitelistRequest(req.body.user_id, req.body.answers);
@@ -116,7 +100,6 @@ app.post('/get_wl_requests', async (req, res) => {
 
 app.post('/get_wl_request_details', async (req, res) => {
 	try {
-		//let apply_result = await Database.applyWhitelistRequest(req.body.user_id, req.body.answers);
 		if(!AdminPanelAuthentication.authnenticate(req.body.token))
 			return res.json({result: 'PERMISSION_DENIED'});
 
@@ -126,6 +109,25 @@ app.post('/get_wl_request_details', async (req, res) => {
 			result: 'SUCCESS',
 			data: request_details
 		});
+	}
+	catch(e) {
+		console.error(e);
+		res.json({result: 'ERROR'});
+	}
+	return;
+});
+
+app.post('/change_wl_request_status', async (req, res) => {
+	try {
+		let token = AdminPanelAuthentication.authnenticate(req.body.token);
+		if(!token)
+			return res.json({result: 'PERMISSION_DENIED'});
+
+		await Database.changeRequestStatus(req.body.id, req.body.status, token.login);
+
+		//TODO - set forum user role
+
+		res.json({ result: 'SUCCESS' });
 	}
 	catch(e) {
 		console.error(e);

@@ -1,5 +1,7 @@
 import * as React from 'react';
+import * as ReactDom from 'react-dom';
 import {withRouter} from 'react-router';
+import {Link} from 'react-router-dom';
 import Utils from './../common/utils';
 import Config from './../common/config';
 import Cookies from './../common/cookies';
@@ -40,6 +42,8 @@ interface RequestDetailSchema {
 }
 
 interface RequestDetailsState {
+	current_id?: string;
+
 	error_msg?: string;
 	loading: boolean;
 
@@ -48,6 +52,12 @@ interface RequestDetailsState {
 }
 
 class RequestDetails extends React.Component<any, RequestDetailsState> {
+	private acceptBtn: HTMLButtonElement | null = null;
+	private acceptTimeout: NodeJS.Timeout | null = null;
+
+	private rejectBtn: HTMLButtonElement | null = null;
+	private rejectTimeout: NodeJS.Timeout | null = null;
+
 	state: RequestDetailsState = {
 		loading: false,
 		request_data: undefined,
@@ -58,14 +68,32 @@ class RequestDetails extends React.Component<any, RequestDetailsState> {
 		super(props);
 	}
 
+	private get request_id() {
+		return this.props.match.params.id;
+	}
+
+	componentWillUnmount() {
+		if(this.acceptTimeout !== null)
+			clearTimeout(this.acceptTimeout);
+		if(this.rejectTimeout !== null)
+			clearTimeout(this.rejectTimeout);
+	}
+
 	componentDidMount() {
-		if(!this.props.match.params.id)
+		if(!this.request_id)
 			return this.setState({error_msg: 'Niepoprawny identyfikator'});
-		this.loadData(this.props.match.params.id);
+		this.loadData(this.request_id);
+	}
+
+	componentDidUpdate(prevProps: any) {		
+		this.loadData(this.request_id);
 	}
 
 	async loadData(_id: string) {
-		this.setState({loading: true});
+		if(this.state.current_id === _id)
+			return;
+		(ReactDom.findDOMNode(this) as Element).scrollIntoView();
+		this.setState({current_id: _id, loading: true});
 
 		try {
 			let res = await Utils.postRequest(Config.server_url + '/get_wl_request_details', {
@@ -93,15 +121,68 @@ class RequestDetails extends React.Component<any, RequestDetailsState> {
 		}
 	}
 
-	tryAccept() {
-		//TODO
+	async changeRequestStatus(_id: string, next_status: string) {
+		console.log('changing', _id, 'to', next_status);
+
+		this.setState({loading: true});
+
+		try {
+			let res = await Utils.postRequest(Config.server_url + '/change_wl_request_status', {
+				id: _id,
+				status: next_status,
+				token: Cookies.getCookie('token')
+			});
+
+			if(res.result === 'PERMISSION_DENIED')
+				return this.props.history.push('/login');
+
+			if(res.result !== 'SUCCESS')
+				return this.setState({error_msg: 'Nie udało się zmienić statusu podania', loading: false});
+
+			this.setState({loading: false, error_msg: undefined});
+
+			//go to list of requests of given status
+			this.props.history.push(`/wl_requests/${next_status}`);
+		}
+		catch(e) {
+			console.error(e);
+			this.setState({error_msg: 'Nie udało się zmienić statusu podania', loading: false})
+		}
 	}
 
-	tryReject() {
-		//TODO
+	tryAccept(_id: string) {
+		if(!this.acceptBtn)
+			return;
+		if(this.acceptTimeout === null) {
+			this.acceptBtn.innerText = 'NA PEWNO?';
+			this.acceptTimeout = setTimeout(() => {
+				if(this.acceptBtn)
+					this.acceptBtn.innerText = 'AKCEPTUJ';
+				this.acceptTimeout = null;
+			}, 5000) as never;
+		}
+		else {
+			this.changeRequestStatus(_id, 'accepted');
+		}
 	}
 
-	renderUserRequest(data: RequestDetailSchema, index: number) {
+	tryReject(_id: string) {
+		if(!this.rejectBtn)
+			return;
+		if(this.rejectTimeout === null) {
+			this.rejectBtn.innerText = 'NA PEWNO?';
+			this.rejectTimeout = setTimeout(() => {
+				if(this.rejectBtn)
+					this.rejectBtn.innerText = 'ODRZUĆ';
+				this.rejectTimeout = null;
+			}, 5000) as never;
+		}
+		else {
+			this.changeRequestStatus(_id, 'rejected');
+		}
+	}
+
+	renderUserRequest(data: RequestDetailSchema, index: number, render_btns = false) {
 		if(data.forum_user.length < 1)
 			return <div key={index}>Niepoprawne dane użytkownika</div>;
 		return <div key={index} className='request-details'>
@@ -169,24 +250,38 @@ class RequestDetails extends React.Component<any, RequestDetailsState> {
 				</div>
 			</div>
 
-			<div className='buttons'>
-				{ (data.status === 'pending' || data.status === 'rejected') && 
-					<button className='accept-btn' onClick={this.tryAccept.bind(this)}>AKCEPTUJ</button> }
-				{ (data.status === 'pending' || data.status === 'accepted') && 
-					<button className='reject-btn' onClick={this.tryReject.bind(this)}>ODRZUĆ</button> }
-			</div>
+			{render_btns === true ?
+				<div className='buttons'>
+					{ (data.status === 'pending' || data.status === 'rejected') && 
+						<button className='accept-btn' ref={el=>this.acceptBtn=el} onClick={() => {
+							this.tryAccept(data._id);
+						}}>AKCEPTUJ</button> }
+					{ (data.status === 'pending' || data.status === 'accepted') && 
+						<button className='reject-btn' ref={el=>this.rejectBtn=el} onClick={() => {
+							this.tryReject(data._id);
+						}}>ODRZUĆ</button> }
+				</div>
+				:
+				<div className='buttons'>
+					<Link to={`/request_details/${data._id}`}>Zarządzaj podaniem</Link>
+				</div>
+			}
 		</div>;
 	}
 
 	render() {
 		return <div className='container request-details-main'>
+			<div style={{textAlign: 'right'}}>
+				<Link to='/wl_requests'>Zamknij</Link>
+				<hr/>
+			</div>
 			{this.state.error_msg && <span className='error-msg'>{this.state.error_msg}</span>}
 			<span>{this.state.loading && 'Ładowanie'}</span>
 			{this.state.request_data && 
-				this.renderUserRequest(this.state.request_data, 7331)}
+				this.renderUserRequest(this.state.request_data, 7331, true)}
 			{this.state.other_user_requests.length > 0 && <>
 				<div className='others_separator'><hr/><span>Inne podania tego gracza</span><hr/></div>
-				{this.state.other_user_requests.map(this.renderUserRequest.bind(this))}
+				{this.state.other_user_requests.map((data, i) => this.renderUserRequest(data, i))}
 			</>}
 		</div>;
 	}

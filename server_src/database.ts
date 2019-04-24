@@ -237,5 +237,19 @@ export default {
 		//console.log(other_user_requests);
 
 		return {request: result, other_user_requests: _other_user_requests};
+	},
+
+	async changeRequestStatus(id: string, _status: string, admin_user: string) {
+		if(_status !== 'pending' && _status !== 'accepted' && _status !== 'rejected')
+			return false;
+
+		let wl_requests = getCollection(COLLECTIONS.wl_requests);
+		const target_id = ObjectId.createFromHexString(id);
+
+		let res = await wl_requests.updateOne({_id: target_id}, { 
+			$set: {status: _status, changed_by: admin_user} 
+		});
+
+		return res.result.ok > 0;
 	}
 }

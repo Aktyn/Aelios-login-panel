@@ -40,6 +40,7 @@ export default {
 	},
 
 	authnenticate(_token: string) {
-		return true;//tokens.find(tok => tok.token === _token);
+		// return true;//test
+		return tokens.find(tok => tok.token === _token);
 	}
 }
