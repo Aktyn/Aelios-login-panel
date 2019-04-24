@@ -150,7 +150,7 @@ export default {
 				_answers[key] = _answers[key].substr(0, MAX_INPUT_LENGTH);
 		}
 
-		console.log('New whitelist request form user:', account.name);
+		console.log('New whitelist request from user:', account.name);
 		await wl_requests.insertOne({
 			user_id: _user_id,
 			timestamp: Date.now(),
