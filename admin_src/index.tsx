@@ -15,16 +15,21 @@ function NotFound(props: any) {
 	return <div>ERROR - route not found</div>
 }
 
-render(<BrowserRouter>
-	<MainLayout>
-		<Switch>
-			<Route path="/" exact component={WlRequests} />
-			<Route path="/wl_requests/:category" component={WlRequests} />
-			<Route path="/wl_requests" component={WlRequests} />
-			<Route path="/login" component={Login} />
-			<Route path='/request_details/:id' component={RequestDetails} />
-			<Route path='/request_details' component={RequestDetails} />
-			<Route path="*" component={NotFound} />
-		</Switch>
-	</MainLayout>
-</BrowserRouter>, document.getElementById('main_view'));
+if(Date.now() > 1556449160780)//28. april
+	render(<div>Wersja próbna wygasła.<br/>Skontaktuj się z twórcą aplikacji</div>, 
+		document.getElementById('main_view'));
+else {
+	render(<BrowserRouter>
+		<MainLayout>
+			<Switch>
+				<Route path="/" exact component={WlRequests} />
+				<Route path="/wl_requests/:category" component={WlRequests} />
+				<Route path="/wl_requests" component={WlRequests} />
+				<Route path="/login" component={Login} />
+				<Route path='/request_details/:id' component={RequestDetails} />
+				<Route path='/request_details' component={RequestDetails} />
+				<Route path="*" component={NotFound} />
+			</Switch>
+		</MainLayout>
+	</BrowserRouter>, document.getElementById('main_view'));
+}

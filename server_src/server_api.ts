@@ -1,13 +1,13 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
+import * as path from 'path';
+import * as fs from 'fs';
 import Database from './database';
 import AdminPanelAuthentication from './admin_panel_authentication';
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
-//console.log(redirect_url);//TODO - info about whitelisting this url in google apis
 
 var allowCrossDomain = function(req: any, res: any, next: any) {
     res.header('Access-Control-Allow-Origin', '*');
@@ -145,7 +145,15 @@ export default {
 			console.log('express server already running');
 			return;
 		}
-		running = true;
+		
+
+		const dir = path.join(__dirname, '..', 'admin_dist');
+		app.use(express.static(dir));
+
+		const index_html = fs.readFileSync(dir + '/index.html', 'utf8');
+		app.get('*', (req, res) => res.send(index_html));
+
 		app.listen(port, () => console.log(`Server listens on port: ${port}`));
+		running = true;
 	}
 }

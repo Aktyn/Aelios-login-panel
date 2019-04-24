@@ -2,3 +2,4 @@ run_dev
 node_modules/
 dist/
 server_dist/
+admin_dist/
