@@ -38,22 +38,28 @@ export default class LoginView extends React.Component<LoginViewProps, LoginStat
 
 	async checkWlStatus(account_data: ForumAccountInfo, preventLoop = false) {
 		//console.log(account_data);
-		let wl_res: {result: string, status: WhitelistStatus} = 
-			await Utils.postRequest(Config.server_url+'/wl_status', account_data);
-		if(wl_res.result !== 'SUCCESS')
-			return this.setState({error_msg: 'Nie udało się pobrać statusu whitelisty'});
+		try {
+			let wl_res: {result: string, status: WhitelistStatus} = 
+				await Utils.postRequest(Config.server_url+'/wl_status', account_data);
+			if(wl_res.result !== 'SUCCESS')
+				return this.setState({error_msg: 'Nie udało się pobrać statusu whitelisty'});
 
-		console.log(wl_res);
-		AccountData.setWlStatus(wl_res.status);
-		
-		switch(wl_res.status.status) {
-			case 'not_found':
-				if(!preventLoop)
-					this.props.switchPage(Pages.WL_QUESTIONS);
-				return;
-			default:
-				this.setState({wl_status: wl_res.status});
-				return;
+			console.log(wl_res);
+			AccountData.setWlStatus(wl_res.status);
+			
+			switch(wl_res.status.status) {
+				case 'not_found':
+					if(!preventLoop)
+						this.props.switchPage(Pages.WL_QUESTIONS);
+					return;
+				default:
+					this.setState({wl_status: wl_res.status});
+					return;
+			}
+		}
+		catch(e) {
+			console.error(e);
+			this.setState({error_msg: 'Błędna odpowiedź serwera'});
 		}
 	}
 
