@@ -1,5 +1,6 @@
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
+import fetch from 'node-fetch';
 import * as path from 'path';
 import * as fs from 'fs';
 import Database from './database';
@@ -125,7 +126,15 @@ app.post('/change_wl_request_status', async (req, res) => {
 
 		await Database.changeRequestStatus(req.body.id, req.body.status, token.login);
 
-		//TODO - set forum user role
+		const api_href = 'http://forum.aelios.pl/gxa.php';
+		const access_key = '3e4966da53a0e52cf5be50732a624b26';
+		
+		if(req.body.status === 'accepted') {//set forum user role
+			let resp = await fetch(`${api_href}?g=12&u=${req.body.user_id}&key=${access_key}`)
+				.then(res => res.text());
+			console.log('forum group changing result:', resp);
+			//console.log(`${api_href}?g=12&u=${req.body.user_id}&key=${access_key}`);
+		}
 
 		res.json({ result: 'SUCCESS' });
 	}
@@ -146,7 +155,6 @@ export default {
 			return;
 		}
 		
-
 		const dir = path.join(__dirname, '..', 'admin_dist');
 		app.use(express.static(dir));
 

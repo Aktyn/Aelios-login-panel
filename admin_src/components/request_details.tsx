@@ -121,7 +121,7 @@ class RequestDetails extends React.Component<any, RequestDetailsState> {
 		}
 	}
 
-	async changeRequestStatus(_id: string, next_status: string) {
+	async changeRequestStatus(_id: string, next_status: string, _user_id: number) {
 		console.log('changing', _id, 'to', next_status);
 
 		this.setState({loading: true});
@@ -130,6 +130,7 @@ class RequestDetails extends React.Component<any, RequestDetailsState> {
 			let res = await Utils.postRequest(Config.server_url + '/change_wl_request_status', {
 				id: _id,
 				status: next_status,
+				user_id: _user_id,
 				token: Cookies.getCookie('token')
 			});
 
@@ -150,7 +151,7 @@ class RequestDetails extends React.Component<any, RequestDetailsState> {
 		}
 	}
 
-	tryAccept(_id: string) {
+	tryAccept(_id: string, user_id: number) {
 		if(!this.acceptBtn)
 			return;
 		if(this.acceptTimeout === null) {
@@ -162,11 +163,11 @@ class RequestDetails extends React.Component<any, RequestDetailsState> {
 			}, 5000) as never;
 		}
 		else {
-			this.changeRequestStatus(_id, 'accepted');
+			this.changeRequestStatus(_id, 'accepted', user_id);
 		}
 	}
 
-	tryReject(_id: string) {
+	tryReject(_id: string, user_id: number) {
 		if(!this.rejectBtn)
 			return;
 		if(this.rejectTimeout === null) {
@@ -178,7 +179,7 @@ class RequestDetails extends React.Component<any, RequestDetailsState> {
 			}, 5000) as never;
 		}
 		else {
-			this.changeRequestStatus(_id, 'rejected');
+			this.changeRequestStatus(_id, 'rejected', user_id);
 		}
 	}
 
@@ -254,11 +255,11 @@ class RequestDetails extends React.Component<any, RequestDetailsState> {
 				<div className='buttons'>
 					{ (data.status === 'pending' || data.status === 'rejected') && 
 						<button className='accept-btn' ref={el=>this.acceptBtn=el} onClick={() => {
-							this.tryAccept(data._id);
+							this.tryAccept(data._id, data.user_id);
 						}}>AKCEPTUJ</button> }
 					{ (data.status === 'pending' || data.status === 'accepted') && 
 						<button className='reject-btn' ref={el=>this.rejectBtn=el} onClick={() => {
-							this.tryReject(data._id);
+							this.tryReject(data._id, data.user_id);
 						}}>ODRZUĆ</button> }
 				</div>
 				:
