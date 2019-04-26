@@ -46,21 +46,21 @@ export default class NewsContainer extends React.Component<any, NewsState> {
 		try {
 			let topics_data: TopicSchema[] = 
 				await Utils.getRequest(`http://forum.aelios.pl/ogloszenia.php`, 
-					{'key': '3e4966da53a0e52cf5be50732a624b26'});
+					{'key': '3e4966da53a0e52cf5be50732a624b26'}, false);
 
 			if(Array.isArray(topics_data)) {
 				topics_data.reverse();
 				for(let top of topics_data) {
-					top.topic_value =
-						top.topic_value.replace(/<___base_url___>/gi, 'https://forum.aelios.pl')
-						.replace(/<a([^>]*)>/g, " <a target='_blank' $1");
+					top.topic_value = top.topic_value//decodeURIComponent(top.topic_value)
+						.replace(/<___base_url___>/gi, 'https://forum.aelios.pl')
+							.replace(/<a([^>]*)>/g, " <a target='_blank' $1");
 				}
 			}
 			this.setState({topics: topics_data});
-			console.log(topics_data);
+			//console.log(topics_data);
 		}
 		catch(e) {
-			this.setState({error_msg: 'Nie udało się pobrać tematów z forum'});
+			this.setState({error_msg: 'Nie udało się pobrać tematów z forum: ' + e});
 			console.error(e);
 		}
 	}
