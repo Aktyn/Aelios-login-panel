@@ -2,16 +2,24 @@
 	min-width: 400px;
 	max-width: 800px;
 
-	max-height: 80vh;
+	max-height: 50vh;
 	overflow-y: auto;
 	border-color: #607D8B;//455A64
 	// background: #1d1f25;
+	// 
+	&::before {
+		content: "";
+		display: block;
+		height: 100px;
+		background: url('./../img/topics_headers/los-santos-by-night-in-gta-v_246.jpeg') center no-repeat;
+		background-size: cover;
+	}
 
 	article {
 		// background-color: #546E7A;//455A64
-		background: linear-gradient(180deg, #4d656f 0%, #455A64 100%);
+		// background: linear-gradient(180deg, #4d656f 0%, #455A64 100%);
 		// background: linear-gradient(180deg, #23252c 0%, #1d1f25 100%);
-		// background: #455A64;
+		background: #455A64;
 
 		padding: 15px 10px;
 
