@@ -2,7 +2,7 @@ import fetch from 'node-fetch';
 import * as crypto from 'crypto';
 import {ForumAccountInfo} from './database';
 
-const PERMITTED_GROUPS = [4, 7, 12, 13, 18];
+const PERMITTED_GROUPS = [18, 10, 6, 13, 7, 4];
 
 interface TokenSchema {//TODO - expiration
 	login: string;
