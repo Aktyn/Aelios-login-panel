@@ -1,6 +1,7 @@
 import React from 'react';
 import LoginView from './login_view';
 import NewsContainer from './news_container';
+import AccountData from './../common/account_data';
 
 import WlQuestions from './wl_questions';
 
@@ -16,6 +17,8 @@ interface HomeState {
 }
 
 export default class Home extends React.Component<any, HomeState> {
+	private change_timestamp = 0;
+
 	state: HomeState = {
 		page: Pages.HOME//WL_QUESTIONS //HOME
 	}
@@ -24,10 +27,24 @@ export default class Home extends React.Component<any, HomeState> {
 		super(props);
 	}
 
+	changePage(target: Pages) {
+		let now = Date.now();
+		if(now - this.change_timestamp > 100) {
+			this.change_timestamp = now;
+			if(target === Pages.WL_QUESTIONS && AccountData.getData() === null)
+				return;
+			this.setState({page: target});
+		}
+	}
+
+	/*componentDidUpdate() {
+		console.log( document.activeElement);
+	}*/
+
 	renderHomePage() {
 		return <>
 			<div className='home-main'>
-				<LoginView switchPage={_page => this.setState({page: _page})}/>
+				<LoginView switchPage={_page => this.changePage(_page)}/>
 				<NewsContainer/>
 			</div>
 			<div>{process.env.NODE_ENV !== 'development' &&
@@ -42,7 +59,7 @@ export default class Home extends React.Component<any, HomeState> {
 	}
 
 	renderWlQuestions() {
-		return <WlQuestions switchPage={_page => this.setState({page: _page})}/>
+		return <WlQuestions switchPage={_page => this.changePage(_page)}/>
 	}
 
 	render() {

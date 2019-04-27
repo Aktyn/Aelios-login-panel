@@ -68,6 +68,9 @@ export default class WlQuestions extends React.Component<WlQuestionsProps, WlQue
 				avatar: accData.avatar
 			});
 		}
+		else {//what an weird error
+			setTimeout(() => this.props.switchPage(Pages.HOME), 200);
+		}
 
 		let wlData = AccountData.getWlStatus();
 		if(wlData) {
@@ -96,9 +99,10 @@ export default class WlQuestions extends React.Component<WlQuestionsProps, WlQue
 				this.logoutTimeout = null;
 			}, 5000) as never;
 		}
-		else
+		else {
+			AccountData.clearData();
 			this.props.switchPage(Pages.HOME);
-			//this.props.history.push(`/`);
+		}
 	}
 
 	trySend() {
