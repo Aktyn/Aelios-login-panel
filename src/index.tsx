@@ -38,8 +38,8 @@ if(process.env.NODE_ENV !== 'development') {
 else {
 	let body = document.body;
 	if(body) {
-		body.style['backgroundColor'] = process.env.NODE_ENV !== 'development' ? 
-			'transparent' : '#006064';
+		body.style['background'] = process.env.NODE_ENV !== 'development' ? 
+			'transparent' : 'linear-gradient(45deg, #006064 0%, #b71c1c 100%)';
 	}
 }
 
@@ -48,10 +48,10 @@ else {
 }*/
 
 //console.log(new Date(Date.now() + 1000*60*60*24*7), new Date(Date.now() + 1000*60*60*24*7).getTime());
-if(Date.now() > 1556449160780)//28. april
-	render(<div>Wersja próbna wygasła.<br/>Skontaktuj się z twórcą aplikacji</div>, 
-		document.getElementById('main_view'));
-else {
+//if(Date.now() > 1556449160780)//28. april
+//	render(<div>Wersja próbna wygasła.<br/>Skontaktuj się z twórcą aplikacji</div>, 
+//		document.getElementById('main_view'));
+//else {
 	/*render(<BrowserRouter>
 		<Switch>
     		<Route path="/wl_questions" exact component={WlQuestions} />
@@ -59,7 +59,7 @@ else {
 		</Switch>
   	</BrowserRouter>, document.getElementById('main_view'));*/
   	render(<Home/>, document.getElementById('main_view'));
-}
+//}
 /*
 
  */

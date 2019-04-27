@@ -15,10 +15,10 @@ function NotFound(props: any) {
 	return <div>ERROR - route not found</div>
 }
 
-if(Date.now() > 1556449160780)//28. april
-	render(<div>Wersja próbna wygasła.<br/>Skontaktuj się z twórcą aplikacji</div>, 
-		document.getElementById('main_view'));
-else {
+// if(Date.now() > 1556449160780)//28. april
+// 	render(<div>Wersja próbna wygasła.<br/>Skontaktuj się z twórcą aplikacji</div>, 
+// 		document.getElementById('main_view'));
+// else {
 	render(<BrowserRouter>
 		<MainLayout>
 			<Switch>
@@ -32,4 +32,4 @@ else {
 			</Switch>
 		</MainLayout>
 	</BrowserRouter>, document.getElementById('main_view'));
-}
+// }
