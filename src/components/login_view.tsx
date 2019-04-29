@@ -2,6 +2,7 @@ import React from 'react';
 //import { withRouter } from 'react-router-dom';
 import Utils from './../common/utils';
 import Config from './../common/config';
+import Cookies from './../common/cookies';
 import AccountData, {ForumAccountInfo, WhitelistStatus} from './../common/account_data';
 
 import {Pages} from './home';
@@ -77,11 +78,13 @@ export default class LoginView extends React.Component<LoginViewProps, LoginStat
 		this.setState({error_msg: undefined});
 
 		try {
-			let res: ForumAccountInfo = await Utils.getRequest(`http://forum.aelios.pl/api.php`, {
+			Cookies.setCookie('last_login_attempt', Date.now());
+			alt.emit('loginAsForumUser', nick, password);
+			/*let res: ForumAccountInfo = await Utils.getRequest(`http://forum.aelios.pl/api.php`, {
 				'username': nick,
 				'password': password
 			});
-			//console.log(res['group_main']);
+			
 			if(res.status !== true)
 				return this.setState({error_msg: 'Logowanie nieudane'});
 			if(res.banned)
@@ -100,12 +103,12 @@ export default class LoginView extends React.Component<LoginViewProps, LoginStat
 				}
 				return;
 			}
-			//	return this.setState({error_msg: 'Nie masz uprawnień do wejścia na serwer'});
 
-			this.checkWlStatus(res);
+			this.checkWlStatus(res);*/
 		}
 		catch(e) {
-			this.setState({error_msg: 'Błędna odpowiedź serwera'});
+			// this.setState({error_msg: 'Błędna odpowiedź serwera'});
+			return this.setState({error_msg: 'Błąd komunikacji z silnikiem gry'});
 			console.error(e);
 		}
 	}
@@ -122,7 +125,7 @@ export default class LoginView extends React.Component<LoginViewProps, LoginStat
 							Twoje podanie oczekuje na rozpatrzenie.
 						</span>;
 					case 'accepted':
-						try {
+						/*try {
 							alt.emit('skipped');//TODO - pass account nickname to different listener
 						}
 						catch(e) {
@@ -131,8 +134,11 @@ export default class LoginView extends React.Component<LoginViewProps, LoginStat
 								<span>Twoje podanie zostało zaakceptowane.</span><br/>
 								<span className='error-msg'>Błąd komunikacji z silnikiem gry</span>
 							</>;
-						}
-						return <span>Twoje podanie zostało zaakceptowane.</span>;
+						}*/
+						return <span>
+							Twoje podanie zostało zaakceptowane.<br/>
+							Skontaktuj się z administracją aby otrzymać stosowną rangę na forum.
+						</span>;
 						//return <span>Twoje podanie zostało zaakceptowane<br/>
 						//	</span>;
 					case 'rejected':
@@ -166,8 +172,10 @@ export default class LoginView extends React.Component<LoginViewProps, LoginStat
 		if(this.state.wl_status)
 			return this.renderWlStatus(this.state.wl_status);
 
+		let dt = Cookies.getCookie('last_login_attempt') || '0';
 		return <div className='login-view container'>
 			<h1></h1>
+			<div>Test: {new Date(parseInt(dt)).toLocaleString('pl-PL')}</div>
 			<div className='input-fields'>
 				<input type='text' maxLength={256} placeholder='Nazwa użytkownika' onKeyDown={e => {
 					if(e.keyCode === 13 && this.pass_input)

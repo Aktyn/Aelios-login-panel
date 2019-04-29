@@ -5,7 +5,7 @@ import AccountData from './../common/account_data';
 
 import WlQuestions from './wl_questions';
 
-declare var alt: any;
+//declare var alt: any;
 
 export const enum Pages {
 	HOME,
@@ -47,15 +47,17 @@ export default class Home extends React.Component<any, HomeState> {
 				<LoginView switchPage={_page => this.changePage(_page)}/>
 				<NewsContainer/>
 			</div>
-			<div>{process.env.NODE_ENV !== 'development' &&
-				<button style={{
-					color: '#000', padding: '5px', marginTop: '10px', width: '100px'
-				}} onClick={() => {
-					alt.emit('skipped');
-				}}>SKIP</button>
-			}
-			</div>
 		</>;
+		/*
+		<div>{process.env.NODE_ENV !== 'development' &&
+			<button style={{
+				color: '#000', padding: '5px', marginTop: '10px', width: '100px'
+			}} onClick={() => {
+				alt.emit('skipped');
+			}}>SKIP</button>
+		}
+		</div>
+		*/
 	}
 
 	renderWlQuestions() {
