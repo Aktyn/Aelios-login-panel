@@ -95,7 +95,7 @@ export default class WlQuestions extends React.Component<WlQuestionsProps, WlQue
 			this.logoutBtn.current.innerText = 'NA PEWNO?';
 			this.logoutTimeout = setTimeout(() => {
 				if(this.logoutBtn.current)
-					this.logoutBtn.current.innerText = 'WYLOGUJ';
+					this.logoutBtn.current.innerText = 'WRÓĆ DO LOGOWANIA';
 				this.logoutTimeout = null;
 			}, 5000) as never;
 		}
@@ -267,7 +267,7 @@ export default class WlQuestions extends React.Component<WlQuestionsProps, WlQue
 					onClick={this.trySend.bind(this)}>WYŚLIJ</button>
 				<br/>
 				<button style={{marginBottom: '10px'}} ref={this.logoutBtn} 
-					onClick={this.tryLogout.bind(this)}>WYLOGUJ</button>
+					onClick={this.tryLogout.bind(this)}>WRÓĆ DO LOGOWANIA</button>
 			</div>
 		</div>;
 	}

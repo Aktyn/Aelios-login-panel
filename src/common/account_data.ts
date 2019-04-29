@@ -26,8 +26,10 @@ export default {
 	getData: () => {
 		return data;
 	},
+
 	clearData: () => {
 		data = null;
+		wl_data = null;
 	},
 
 	setWlStatus: (_wl_data: WhitelistStatus) => {
