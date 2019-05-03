@@ -192,8 +192,8 @@ export default class LoginView extends React.Component<LoginViewProps, LoginStat
 			{this.renderLoginPanel()}
 			<div className='info'>
 				Dane logowania dotyczą konta na forum.<br/>
-				Nie masz konta? Zarejestruj się <a href='https://forum.aelios.pl/' 
-					target='_blank' rel='noopener noreferrer'>na tej stronie</a>.
+				Nie masz konta? Zarejestruj się na <a href='https://forum.aelios.pl/' 
+					target='_blank' rel='noopener noreferrer'>https://forum.aelios.pl</a>.
 			</div>
 		</div>;
 	}
