@@ -18,7 +18,7 @@ function calcAge(data_ur: string) {//YYYY-MM-DD
 		years_between--;
 	}
 
-	return years_between + ' lata';
+	return years_between + ' lat' + (years_between < 22 || (years_between%10) < 3 ? '' : 'a');
 }
 
 interface RequestShortSchema {
@@ -36,12 +36,14 @@ interface RequestsState {
 	error_msg?: string;
 
 	requests_data: RequestShortSchema[];
+	counts: {_id: string, count: number}[]
 }
 
 class WlRequests extends React.Component<any, RequestsState> {
 	state: RequestsState = {
 		loading: false,
-		requests_data: []
+		requests_data: [],
+		counts: []
 	}
 
 	constructor(props: any) {
@@ -81,7 +83,8 @@ class WlRequests extends React.Component<any, RequestsState> {
 			this.setState({
 				loading: false, 
 				error_msg: undefined, 
-				requests_data: res.data
+				requests_data: res.data,
+				counts: res.counts
 				//[...res.data, ...res.data, ...res.data, ...res.data, ...res.data]
 			});
 		}
@@ -91,12 +94,20 @@ class WlRequests extends React.Component<any, RequestsState> {
 		}
 	}
 
+	private getCounts(status: string) {
+		let c = this.state.counts.find(c => c._id === status);
+		if(c)
+			return c.count;
+		else
+			return 0;
+	}
+
 	render() {
 		return <div className='container wl-requests-main'>
 			<div className={`categories ${this.state.category}`}>
-				<Link to='/wl_requests/pending'>OCZEKUJĄCE</Link>
-				<Link to='/wl_requests/accepted'>ZAAKCEPTOWANE</Link>
-				<Link to='/wl_requests/rejected'>ODRZUCONE</Link>
+				<Link to='/wl_requests/pending'>OCZEKUJĄCE ({this.getCounts('pending')})</Link>
+				<Link to='/wl_requests/accepted'>ZAAKCEPTOWANE ({this.getCounts('accepted')})</Link>
+				<Link to='/wl_requests/rejected'>ODRZUCONE ({this.getCounts('rejected')})</Link>
 			</div>
 			<div>
 				<div className='error-msg'>{this.state.error_msg}</div>

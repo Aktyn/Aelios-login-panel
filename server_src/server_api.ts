@@ -89,7 +89,8 @@ app.post('/get_wl_requests', async (req, res) => {
 
 		res.json({
 			result: 'SUCCESS',
-			data: wl_requests
+			data: wl_requests.result,
+			counts: wl_requests.counts
 		});
 	}
 	catch(e) {

@@ -38,7 +38,7 @@ export default class Home extends React.Component<any, HomeState> {
 		}
 		catch(e) {}
 
-		/*if(process.env.NODE_ENV === 'development') {
+		if(process.env.NODE_ENV === 'development') {
 			setTimeout(() => {
 				this.onLoginFailed({
 					access: true,
@@ -52,7 +52,7 @@ export default class Home extends React.Component<any, HomeState> {
 					status: true,
 				});
 			}, 1000);
-		}*/
+		}
 	}
 
 	onLoginFailed(res: ForumAccountInfo) {

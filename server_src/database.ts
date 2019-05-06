@@ -194,8 +194,15 @@ export default {
 			} }
 		]).toArray();
 
+		let counts = await wl_requests.aggregate([
+			{ $group: {
+				_id: '$status',
+				count: {$sum: 1}
+			} }
+		]).toArray();
+
 		//console.log(result, result.map(res => res.forum_user));
-		return result;
+		return {result, counts};
 	},
 
 	async getRequestDetails(id: string) {
