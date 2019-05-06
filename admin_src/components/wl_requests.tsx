@@ -18,7 +18,7 @@ function calcAge(data_ur: string) {//YYYY-MM-DD
 		years_between--;
 	}
 
-	return years_between + ' lat' + (years_between < 22 || (years_between%10) < 3 ? '' : 'a');
+	return years_between + ' lat' + (years_between < 22 || (years_between%10) < 2 ? '' : 'a');
 }
 
 interface RequestShortSchema {
